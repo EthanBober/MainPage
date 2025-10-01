@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experience Details - Ethan Bober</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Background with subtle grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            right: 2rem;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Main content */
+        .main-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+
+        /* Experience header */
+        .experience-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .experience-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s ease;
+        }
+
+        .company-name {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ffffff, #4A90E2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .position-title {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.5rem;
+        }
+
+        .experience-period {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+        }
+
+        .experience-location {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Experience content */
+        .experience-content {
+            display: grid;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .content-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s ease;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #4A90E2;
+        }
+
+        .section-content {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Achievement highlights */
+        .achievement-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .achievement-list li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .achievement-list li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #4A90E2;
+            font-size: 0.8rem;
+        }
+
+        /* Skills used */
+        .skills-used {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .skill-tag {
+            background: rgba(74, 144, 226, 0.2);
+            color: #4A90E2;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(74, 144, 226, 0.3);
+        }
+
+        /* Navigation between experiences */
+        .experience-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .experience-navigation.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-button.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .nav-info {
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 6rem 1rem 2rem;
+            }
+            
+            .nav {
+                top: 1rem;
+                left: 1rem;
+                right: 1rem;
+            }
+            
+            .content-section {
+                padding: 1.5rem;
+            }
+            
+            .experience-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #4A90E2;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <a href="index.html">← Back to Portfolio</a>
+        <div>
+            <a href="skills.html">Skills</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <!-- Experience header -->
+        <header class="experience-header" id="experienceHeader">
+            <h1 class="company-name" id="companyName">Loading...</h1>
+            <h2 class="position-title" id="positionTitle">
+                <span class="loading"></span>
+            </h2>
+            <div class="experience-period" id="experiencePeriod"></div>
+            <div class="experience-location" id="experienceLocation"></div>
+        </header>
+
+        <!-- Experience content -->
+        <div class="experience-content" id="experienceContent">
+            <!-- Content will be dynamically loaded -->
+        </div>
+
+        <!-- Experience navigation -->
+        <nav class="experience-navigation" id="experienceNavigation">
+            <a href="#" class="nav-button" id="prevExperience">
+                ← Previous Experience
+            </a>
+            <div class="nav-info">
+                <span id="currentExperienceNumber">1</span> of <span id="totalExperiences">5</span>
+            </div>
+            <a href="#" class="nav-button" id="nextExperience">
+                Next Experience →
+            </a>
+        </nav>
+    </main>
+
+    <script>
+        // Experience data
+        const experiences = {
+            'asm': {
+                company: 'ASM International',
+                position: 'Materials Informatics Engineering Intern',
+                period: 'May 2025 – August 2025',
+                location: 'Cleveland, OH',
+                description: 'Engineered an automated pipeline to migrate material records from legacy GRANTA databases into a Neo4j graph-based platform for material search, handling 250,000 materials and 4,000,000 material properties.',
+                achievements: [
+                    '95% reduction in data retrieval time through database migration and reformatting for machine-readability',
+                    'Presenting work to 160+ company representatives at the International Materials, Applications, and Technologies conference (5,000+ attendees)',
+                    'Developed automated pipeline for migrating 250,000 materials with 4M+ properties',
+                    'Implemented Neo4j graph database for enhanced material search capabilities'
+                ],
+                skills: ['Neo4j', 'Python', 'Database Migration', 'GRANTA', 'Data Processing', 'Graph Databases']
+            },
+            'quattrone': {
+                company: 'Quattrone Nanofabrication Facility',
+                position: 'PVD & Metrology Process Assistant',
+                period: 'April 2025 – Present',
+                location: 'Philadelphia, PA',
+                description: 'Standardized PVD sputtering workflows and characterized materials in ISO 6 (Class 1,000) clean room environment, working with advanced semiconductor fabrication processes.',
+                achievements: [
+                    'Achieved ±5% thickness uniformity on 150 mm wafers through standardized PVD sputtering workflows',
+                    'Synthesized patterned Nb-Si & ITO films using UV photolithography and lift-off techniques',
+                    'Characterized wafers via scanning electron microscope and optical profilometry',
+                    'Maintained PVD DC/RF sputtering material supply and validated performance tolerance weekly'
+                ],
+                skills: ['PVD Sputtering', 'Photolithography', 'SEM', 'Optical Profilometry', 'Clean Room Protocols', 'Materials Characterization']
+            },
+            'shu-yang': {
+                company: 'Shu Yang Materials Science Lab',
+                position: 'Undergraduate Polymer Researcher',
+                period: 'August 2024 – Present',
+                location: 'Philadelphia, PA',
+                description: 'Conducted research on advanced polymer materials for HVAC applications, focusing on desiccant materials and moisture absorption properties.',
+                achievements: [
+                    'Fabricated 285-channel desiccant wheel using precision laser cutting for HVAC systems',
+                    'Performed gravimetric sorption analysis to measure water uptake with different synthesis parameters',
+                    'Achieved a 3.5× increase in overall moisture absorption compared to commercial hygroscopic desiccants',
+                    'Optimized synthesis parameters for enhanced material performance'
+                ],
+                skills: ['Polymer Synthesis', 'Laser Cutting', 'Gravimetric Analysis', 'HVAC Systems', 'Materials Testing', 'Research Methodology']
+            },
+            'sci-oly': {
+                company: 'Science Olympiad at Penn',
+                position: 'Lead Organizer – Materials Science Event',
+                period: 'September 2024 – Present',
+                location: 'Philadelphia, PA',
+                description: 'Coordinated scheduling and resource management for materials science competitions, leading a team of volunteers and creating educational content.',
+                achievements: [
+                    'Coordinated scheduling and resource management for 120+ participants in material science event',
+                    'Authored exam content bank with 100+ questions covering crystallography, polymers, and nanomaterials',
+                    'Led and trained volunteer team of 10 event supervisors and graders for exam logistics and evaluation standards',
+                    'Developed comprehensive event management protocols'
+                ],
+                skills: ['Event Coordination', 'Team Leadership', 'Educational Content Development', 'Project Management', 'Volunteer Training']
+            },
+            'mallouk': {
+                company: 'Mallouk Chemistry Lab',
+                position: 'Undergraduate Energy Researcher',
+                period: 'September 2023 – August 2024',
+                location: 'Philadelphia, PA',
+                description: 'Conducted research on photocatalyst materials and energy applications, focusing on surface chemistry and solubility modifications.',
+                achievements: [
+                    'Purified samples via flash chromatography and performed chemical assays of samples via NMR',
+                    'Conducted ligand exchange reactions to modulate surface chemistry and solubility of photocatalyst',
+                    'Optimized reaction conditions for enhanced photocatalytic activity',
+                    'Collaborated on energy research projects with graduate students and faculty'
+                ],
+                skills: ['Flash Chromatography', 'NMR Spectroscopy', 'Ligand Exchange', 'Photocatalysis', 'Chemical Synthesis', 'Research Collaboration']
+            }
+        };
+
+        // Current experience tracking
+        let currentExperienceIndex = 0;
+        const experienceIds = ['asm', 'quattrone', 'shu-yang', 'sci-oly', 'mallouk'];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get experience ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const experienceId = urlParams.get('id') || 'asm';
+            
+            // Set current experience index
+            currentExperienceIndex = experienceIds.indexOf(experienceId);
+            if (currentExperienceIndex === -1) currentExperienceIndex = 0;
+            
+            // Load experience data
+            loadExperience(experienceIds[currentExperienceIndex]);
+            
+            // Setup navigation
+            setupNavigation();
+        });
+
+        function loadExperience(experienceId) {
+            const experience = experiences[experienceId];
+            if (!experience) return;
+            
+            // Update header
+            document.getElementById('companyName').textContent = experience.company;
+            document.getElementById('positionTitle').textContent = experience.position;
+            document.getElementById('experiencePeriod').textContent = experience.period;
+            document.getElementById('experienceLocation').textContent = experience.location;
+            
+            // Update content
+            const contentContainer = document.getElementById('experienceContent');
+            contentContainer.innerHTML = `
+                <div class="content-section">
+                    <h3 class="section-title">Overview</h3>
+                    <div class="section-content">
+                        ${experience.description}
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">Key Achievements</h3>
+                    <ul class="achievement-list">
+                        ${experience.achievements.map(achievement => `<li>${achievement}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="content-section">
+                    <h3 class="section-title">Technologies & Skills</h3>
+                    <div class="skills-used">
+                        ${experience.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // Update navigation info
+            document.getElementById('currentExperienceNumber').textContent = currentExperienceIndex + 1;
+            document.getElementById('totalExperiences').textContent = experienceIds.length;
+            
+            // Update navigation buttons
+            const prevButton = document.getElementById('prevExperience');
+            const nextButton = document.getElementById('nextExperience');
+            
+            if (currentExperienceIndex === 0) {
+                prevButton.classList.add('disabled');
+            } else {
+                prevButton.classList.remove('disabled');
+                prevButton.href = `?id=${experienceIds[currentExperienceIndex - 1]}`;
+            }
+            
+            if (currentExperienceIndex === experienceIds.length - 1) {
+                nextButton.classList.add('disabled');
+            } else {
+                nextButton.classList.remove('disabled');
+                nextButton.href = `?id=${experienceIds[currentExperienceIndex + 1]}`;
+            }
+
+            // Trigger reveal animations for updated content
+            requestAnimationFrame(() => animateExperienceDetails());
+        }
+
+        function setupNavigation() {
+            const prevButton = document.getElementById('prevExperience');
+            const nextButton = document.getElementById('nextExperience');
+            
+            prevButton.addEventListener('click', function(e) {
+                if (this.classList.contains('disabled')) {
+                    e.preventDefault();
+                    return;
+                }
+                e.preventDefault();
+                navigateToExperience(currentExperienceIndex - 1);
+            });
+            
+            nextButton.addEventListener('click', function(e) {
+                if (this.classList.contains('disabled')) {
+                    e.preventDefault();
+                    return;
+                }
+                e.preventDefault();
+                navigateToExperience(currentExperienceIndex + 1);
+            });
+        }
+
+        function navigateToExperience(index) {
+            if (index < 0 || index >= experienceIds.length) return;
+            
+            // Add transition effect
+            const content = document.getElementById('experienceContent');
+            content.style.opacity = '0';
+            content.style.transform = 'translateY(-20px)';
+            
+            setTimeout(() => {
+                currentExperienceIndex = index;
+                loadExperience(experienceIds[currentExperienceIndex]);
+                
+                // Animate back in
+                content.style.opacity = '1';
+                content.style.transform = 'translateY(0)';
+            }, 300);
+            
+            // Update URL without page reload
+            const newUrl = `${window.location.pathname}?id=${experienceIds[index]}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+        }
+
+        function animateExperienceDetails() {
+            const header = document.getElementById('experienceHeader');
+            if (header) {
+                header.classList.remove('visible');
+                void header.offsetWidth;
+                setTimeout(() => header.classList.add('visible'), 80);
+            }
+
+            const sections = document.querySelectorAll('#experienceContent .content-section');
+            sections.forEach(section => {
+                section.classList.remove('visible');
+            });
+
+            sections.forEach((section, index) => {
+                setTimeout(() => {
+                    section.classList.add('visible');
+                }, 180 + index * 180);
+            });
+
+            const nav = document.getElementById('experienceNavigation');
+            if (nav) {
+                nav.classList.remove('visible');
+                void nav.offsetWidth;
+                setTimeout(() => nav.classList.add('visible'), 220 + sections.length * 120);
+            }
+        }
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function(e) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const experienceId = urlParams.get('id') || 'asm';
+            const newIndex = experienceIds.indexOf(experienceId);
+            
+            if (newIndex !== -1 && newIndex !== currentExperienceIndex) {
+                currentExperienceIndex = newIndex;
+                loadExperience(experienceIds[currentExperienceIndex]);
+            }
+        });
+    </script>
+</body>
+</html>

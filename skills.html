@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills & Expertise - Ethan Bober</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Background with subtle grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            right: 2rem;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Main content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .page-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s ease;
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ffffff, #4A90E2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Skills categories */
+        .skills-container {
+            display: grid;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .skill-category {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .skill-category.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(74, 144, 226, 0.2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #4A90E2;
+        }
+
+        /* Skill items */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .skill-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .skill-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .skill-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .skill-level {
+            font-size: 0.8rem;
+            color: #4A90E2;
+            background: rgba(74, 144, 226, 0.2);
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+        }
+
+        .skill-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .skill-tag {
+            background: rgba(74, 144, 226, 0.1);
+            color: rgba(74, 144, 226, 0.8);
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+        }
+
+        /* Proficiency bars */
+        .proficiency-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .proficiency-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4A90E2, #6bb6ff);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 1.5s ease;
+        }
+
+        .skill-item:hover .proficiency-fill {
+            transition-delay: 0.1s;
+        }
+
+        /* Learning timeline */
+        .learning-timeline {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            margin-top: 3rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .learning-timeline.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s ease;
+        }
+
+        .timeline-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #4A90E2;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: #4A90E2;
+            border-radius: 50%;
+            border: 3px solid rgba(74, 144, 226, 0.3);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 1.5rem;
+            width: 2px;
+            height: calc(100% + 1rem);
+            background: rgba(74, 144, 226, 0.2);
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        .timeline-period {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-event {
+            font-size: 1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 6rem 1rem 2rem;
+            }
+            
+            .nav {
+                top: 1rem;
+                left: 1rem;
+                right: 1rem;
+            }
+            
+            .skill-category {
+                padding: 1.5rem;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .category-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Animation classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <a href="index.html">← Back to Portfolio</a>
+        <div>
+            <a href="experience.html">Experience</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <!-- Page header -->
+        <header class="page-header fade-in">
+            <h1 class="page-title">Skills & Expertise</h1>
+            <p class="page-subtitle">
+                Comprehensive technical competencies in materials engineering, fabrication, characterization, and computational modeling
+            </p>
+        </header>
+
+        <!-- Skills categories -->
+        <div class="skills-container">
+            <!-- Fabrication Skills -->
+            <section class="skill-category fade-in">
+                <div class="category-header">
+                    <div class="category-icon">🔧</div>
+                    <h2 class="category-title">Fabrication & Processing</h2>
+                </div>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">PVD Sputtering</span>
+                            <span class="skill-level">Advanced</span>
+                        </div>
+                        <div class="skill-description">
+                            DC/RF sputtering techniques for thin film deposition with precise thickness control and uniformity optimization.
+                        </div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">DC Sputtering</span>
+                            <span class="skill-tag">RF Sputtering</span>
+                            <span class="skill-tag">Thin Films</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" data-width="90"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Optical Lithography</span>
+                            <span class="skill-level">Advanced</span>
+                        </div>
+                        <div class="skill-description">
+                            UV photolithography processes for patterning semiconductor materials with sub-micron resolution.
+                        </div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">UV Lithography</span>
+                            <span class="skill-tag">Patterning</span>
+                            <span class="skill-tag">Semiconductors</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" data-width="85"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">E-Beam Evaporation</span>
+                            <span class="skill-level">Intermediate</span>
+                        </div>
+                        <div class="skill-description">
+                            Electron beam evaporation for high-purity metal deposition and multi-layer stack fabrication.
+                        </div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">E-Beam</span>
+                            <span class="skill-tag">Metal Deposition</span>
+                            <span class="skill-tag">Multi-layers</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" data-width="75"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Hydrogel Synthesis</span>
+                            <span class="skill-level">Intermediate</span>
+                        </div>
+                        <div class="skill-description">
+                            Polymer synthesis and hydrogel fabrication for moisture absorption and environmental applications.
+                        </div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Polymer Chemistry</span>
+                            <span class="skill-tag">Hydrogels</span>
+                            <span class="skill-tag">Synthesis</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" data-width="80"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Characterization Skills -->
+            <section class="skill-category fade-in">
+                <div class="category-header">
+                    <div class="category-icon">🔬</div>
+                    <h2 class="category-title">Materials Characterization</h2>
+                </div>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Scanning Electron Microscopy</span>
+                            <span class="skill-level">Advanced</span>
+                        </div>
+                        <div class="skill-description">
+                            SEM imaging and analysis for material morphology, surface characterization, and failure analysis.
+                        </div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">SEM Imaging</span>
+                            <span class="skill-tag">Surface Analysis</span>
+                            <span class="skill-tag">Morphology</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" data-width="88"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Thermal Analysis</span>
+                            <span class="skill-level">Intermediate</span>
+                        </div>
+                        <div class="skill-description">
+                            DSC, TGA, and DMA techniques for thermal property characterization and material behavior analysis.
+                        </div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">DSC</span>
+                            <span class="skill-tag">TGA</span>
+                            <span class="skill-tag">DMA</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" data-width="70"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Optical Profilometry</span>
+                            <span class="skill-level">Advanced</span>
+                        </div>
+                        <div class="skill-description">
+                            Non-contact surface profiling and roughness measurements for quality control and process optimization.
+                        </div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Surface Profiling</span>
+                            <span class="skill-tag">Roughness</span>
+                            <span class="skill-tag">Quality Control</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" data-width="82"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Gravimetric Analysis</span>
+                            <span class="skill-level">Intermediate</span>
+                        </div>
+                        <div class="skill-description">
+                            Precision weight measurements for moisture absorption, sorption analysis, and material degradation studies.
+                        </div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Moisture Analysis</span>
+                            <span class="skill-tag">Sorption</span>
+                            <span class="skill-tag">Degradation</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" data-width="78"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Computational Skills -->
+            <section class="skill-category fade-in">
+                <div class="category-header">
+                    <div class="category-icon">💻</div>
+                    <h2 class="category-title">Computational & Modeling</h2>
+                </div>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Python Programming</span>
+                            <span class="skill-level">Advanced</span>
+                        </div>
+                        <div class="skill-description">
+                            Data analysis, automation scripts, and scientific computing for materials research and process optimization.
+                        </div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Data Analysis</span>
+                            <span class="skill-tag">Automation</span>
+                            <span class="skill-tag">Scientific Computing</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" data-width="92"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">SolidWorks</span>
+                            <span class="skill-level">Intermediate</span>
+                        </div>
+                        <div class="skill-description">
+                            3D CAD modeling, assembly design, and technical drawing for mechanical components and systems.
+                        </div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">3D Modeling</span>
+                            <span class="skill-tag">CAD</span>
+                            <span class="skill-tag">Assembly Design</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" data-width="76"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">ANSYS Suite</span>
+                            <span class="skill-level">Intermediate</span>
+                        </div>
+                        <div class="skill-description">
+                            Finite element analysis for thermal, mechanical, and fluid dynamics simulations and optimization.
+                        </div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">FEA</span>
+                            <span class="skill-tag">Simulation</span>
+                            <span class="skill-tag">Optimization</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" data-width="72"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Neo4j & Graph Databases</span>
+                            <span class="skill-level">Advanced</span>
+                        </div>
+                        <div class="skill-description">
+                            Graph database design and implementation for materials informatics and complex data relationships.
+                        </div>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Graph Databases</span>
+                            <span class="skill-tag">Neo4j</span>
+                            <span class="skill-tag">Materials Informatics</span>
+                        </div>
+                        <div class="proficiency-bar">
+                            <div class="proficiency-fill" data-width="85"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Learning timeline -->
+        <section class="learning-timeline fade-in">
+            <h2 class="timeline-title">Learning Journey</h2>
+            
+            <div class="timeline-item">
+                <div class="timeline-period">September 2023 - August 2024</div>
+                <div class="timeline-event">Mallouk Chemistry Lab - Energy Research</div>
+                <div class="timeline-description">
+                    Developed expertise in chemical synthesis, NMR spectroscopy, and photocatalyst surface chemistry through hands-on research projects.
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-period">August 2024 - Present</div>
+                <div class="timeline-event">Shu Yang Materials Lab - Polymer Research</div>
+                <div class="timeline-description">
+                    Advanced polymer synthesis techniques, laser cutting processes, and gravimetric analysis methods for HVAC applications.
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-period">April 2025 - Present</div>
+                <div class="timeline-event">Quattrone Nanofabrication Facility</div>
+                <div class="timeline-description">
+                    Mastered PVD sputtering, optical lithography, and clean room protocols for semiconductor device fabrication.
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-period">May 2025 - August 2025</div>
+                <div class="timeline-event">ASM International - Materials Informatics</div>
+                <div class="timeline-description">
+                    Gained expertise in database design, graph databases, and large-scale data processing for materials informatics applications.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        
+                        // Animate proficiency bars
+                        if (entry.target.classList.contains('skill-category')) {
+                            const bars = entry.target.querySelectorAll('.proficiency-fill');
+                            bars.forEach((bar, index) => {
+                                setTimeout(() => {
+                                    const width = bar.getAttribute('data-width');
+                                    bar.style.width = width + '%';
+                                }, index * 100);
+                            });
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all fade-in elements
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Add hover effects for skill items
+            const skillItems = document.querySelectorAll('.skill-item');
+            skillItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    anime({
+                        targets: this,
+                        scale: 1.02,
+                        duration: 200,
+                        easing: 'easeOutQuad'
+                    });
+                });
+
+                item.addEventListener('mouseleave', function() {
+                    anime({
+                        targets: this,
+                        scale: 1,
+                        duration: 200,
+                        easing: 'easeOutQuad'
+                    });
+                });
+            });
+
+            // Animate page header
+            setTimeout(() => {
+                document.querySelector('.page-header').classList.add('visible');
+            }, 200);
+        });
+    </script>
+</body>
+</html>

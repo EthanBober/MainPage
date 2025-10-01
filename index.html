@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethan Bober - Materials Engineering Portfolio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            cursor: crosshair;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Canvas for interactive grid background */
+        #gridCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: auto;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 100;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Main container */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Central name display */
+        .name-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            width: clamp(320px, 34vw, 460px);
+            height: clamp(220px, 26vw, 320px);
+            padding: 1.25rem 2.5rem;
+        }
+
+        .name-center .name-orb {
+            position: absolute;
+            inset: 0;
+            border-radius: 50% / 58%;
+            background: radial-gradient(ellipse at 52% 38%, rgba(126, 176, 255, 0.16), rgba(12, 20, 36, 0.08));
+            border: 1px solid rgba(126, 176, 255, 0.18);
+            box-shadow: 0 16px 32px rgba(80, 130, 210, 0.16), 0 0 120px rgba(120, 180, 255, 0.28);
+            filter: drop-shadow(0 0 32px rgba(110, 140, 220, 0.32));
+            pointer-events: none;
+            z-index: -1;
+            transform-origin: center;
+            animation: orbPulse 12s ease-in-out infinite;
+        }
+
+        .hero-name {
+            font-size: clamp(2.1rem, 5.4vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 0.15rem;
+            background: linear-gradient(45deg, #e9f0ff, #7fb0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 14px rgba(95, 160, 255, 0.36);
+            line-height: 1.05;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-description {
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            font-weight: 400;
+            color: rgba(220, 228, 244, 0.72);
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Bubbles positioned around the name */
+        .bubble {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 168px;
+            height: 168px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 28%, rgba(52, 60, 86, 0.9), rgba(12, 16, 26, 0.95));
+            border: 1px solid rgba(118, 148, 220, 0.34);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1.1rem;
+            gap: 0.35rem;
+            cursor: pointer;
+            transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                        background 0.35s ease,
+                        border-color 0.35s ease,
+                        box-shadow 0.35s ease,
+                        opacity 0.35s ease;
+            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.38), 0 0 36px rgba(90, 130, 220, 0.18);
+            z-index: 15;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+        }
+
+        .bubble:hover {
+            transform: translate(-50%, -50%) scale(1.06);
+            background: radial-gradient(circle at 50% 26%, rgba(70, 90, 138, 0.96), rgba(18, 20, 33, 0.96));
+            border-color: rgba(140, 170, 255, 0.55);
+            box-shadow: 0 24px 60px rgba(20, 35, 80, 0.6), 0 0 48px rgba(110, 160, 255, 0.32);
+        }
+
+        .bubble-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            width: 100%;
+            transform: translateY(0);
+            transition: transform 0.35s ease;
+        }
+
+        .bubble:hover .bubble-content {
+            transform: translateY(-12px);
+        }
+
+        .bubble-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #ffffff;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .bubble-role {
+            font-size: 0.78rem;
+            color: rgba(215, 225, 240, 0.82);
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .bubble-detail {
+            font-size: 0.7rem;
+            color: rgba(200, 210, 230, 0.62);
+            opacity: 0;
+            transform: translateY(12px);
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease, transform 0.3s ease, max-height 0.35s ease;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .bubble:hover .bubble-detail {
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 48px;
+        }
+
+        /* Bubble positions handled dynamically for symmetry */
+
+        /* Arrows from center to bubbles */
+        .arrows-container {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .arrow {
+            stroke: rgba(255, 255, 255, 0.45);
+            stroke-width: 1.8;
+            fill: none;
+            stroke-linecap: round;
+        }
+
+        /* Contact footer */
+        .contact-footer {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1.25rem;
+            z-index: 100;
+        }
+
+        .contact-footer a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.25s ease, transform 0.25s ease;
+        }
+
+        .contact-footer a:hover {
+            color: #4A90E2;
+            transform: translateY(-2px);
+        }
+
+        @keyframes orbPulse {
+            0%, 100% {
+                transform: scaleX(1) scaleY(1);
+                box-shadow: 0 16px 32px rgba(80, 130, 210, 0.16), 0 0 120px rgba(120, 180, 255, 0.28);
+            }
+            50% {
+                transform: scaleX(1.04) scaleY(1.02);
+                box-shadow: 0 22px 48px rgba(90, 150, 230, 0.22), 0 0 160px rgba(155, 200, 255, 0.42);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .name-center {
+                width: clamp(220px, 70vw, 260px);
+                height: clamp(220px, 70vw, 260px);
+                padding: 0 1rem;
+            }
+            
+            .hero-name {
+                font-size: clamp(2rem, 7vw, 3.4rem);
+            }
+            
+            .hero-description {
+                font-size: clamp(0.95rem, 3.2vw, 1.3rem);
+            }
+            
+            .bubble {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .nav {
+                top: 1rem;
+                right: 1rem;
+                gap: 1rem;
+            }
+            
+            .contact-footer {
+                bottom: 1rem;
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .contact-footer a {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Grid background canvas -->
+    <canvas id="gridCanvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <a href="experience.html">Experience</a>
+        <a href="skills.html">Skills</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <!-- Main container -->
+    <div class="main-container">
+        <!-- Center name display -->
+        <div class="name-center" id="name-box">
+            <div class="name-orb" aria-hidden="true"></div>
+            <h1 class="hero-name">Ethan Bober</h1>
+            <div class="hero-description">
+                <span id="typed-text"></span>
+            </div>
+        </div>
+
+        <!-- Experience bubbles positioned around center -->
+        <div class="bubble bubble-1" id="bubble-asm" data-angle="270" onclick="goToExperience('asm')">
+            <div class="bubble-content">
+                <div class="bubble-title">ASM International</div>
+                <div class="bubble-role">Materials Informatics Intern</div>
+                <div class="bubble-detail">Data pipelines & graph modeling</div>
+            </div>
+        </div>
+
+        <div class="bubble bubble-2" id="bubble-quattrone" data-angle="342" onclick="goToExperience('quattrone')">
+            <div class="bubble-content">
+                <div class="bubble-title">Quattrone NanoFab</div>
+                <div class="bubble-role">PVD & Metrology Assistant</div>
+                <div class="bubble-detail">Semiconductor fabrication workflows</div>
+            </div>
+        </div>
+
+        <div class="bubble bubble-3" id="bubble-shuyang" data-angle="54" onclick="goToExperience('shu-yang')">
+            <div class="bubble-content">
+                <div class="bubble-title">Shu Yang Lab</div>
+                <div class="bubble-role">Polymer Researcher</div>
+                <div class="bubble-detail">Moisture-responsive polymers</div>
+            </div>
+        </div>
+
+        <div class="bubble bubble-4" id="bubble-scioly" data-angle="126" onclick="goToExperience('sci-oly')">
+            <div class="bubble-content">
+                <div class="bubble-title">Science Olympiad</div>
+                <div class="bubble-role">M.S Supervisor</div>
+                <div class="bubble-detail">STEM Education Initiative</div>
+            </div>
+        </div>
+
+        <div class="bubble bubble-5" id="bubble-mallouk" data-angle="198" onclick="goToExperience('mallouk')">
+            <div class="bubble-content">
+                <div class="bubble-title">Mallouk Lab</div>
+                <div class="bubble-role">Energy Researcher</div>
+                <div class="bubble-detail">Clean energy chemistry</div>
+            </div>
+        </div>
+
+        <!-- Arrows from center to bubbles -->
+        <div class="arrows-container">
+            <svg width="100%" height="100%" preserveAspectRatio="none">
+                <defs>
+                    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="rgba(255,255,255,0.4)" />
+                    </marker>
+                </defs>
+                <line class="arrow" data-target="#bubble-asm" marker-end="url(#arrowhead)" />
+                <line class="arrow" data-target="#bubble-quattrone" marker-end="url(#arrowhead)" />
+                <line class="arrow" data-target="#bubble-shuyang" marker-end="url(#arrowhead)" />
+                <line class="arrow" data-target="#bubble-scioly" marker-end="url(#arrowhead)" />
+                <line class="arrow" data-target="#bubble-mallouk" marker-end="url(#arrowhead)" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Contact footer -->
+    <footer class="contact-footer">
+        <a href="mailto:ebober@seas.upenn.edu" title="Email">Email</a>
+        <a href="https://linkedin.com/in/ethan-bober" target="_blank" title="LinkedIn">LinkedIn</a>
+        <a href="https://github.com/ethan-bober" target="_blank" title="GitHub">GitHub</a>
+        <a href="tel:954-982-1449" title="Phone">Phone</a>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // Initialize typed text and animate the floating layout
+        document.addEventListener('DOMContentLoaded', function() {
+            new Typed('#typed-text', {
+                strings: [
+                    'Materials Engineering Student',
+                    'Undergraduate Researcher',
+                    'Nanofabrication Intern',
+                ],
+                typeSpeed: 60,
+                backSpeed: 30,
+                backDelay: 2000,
+                loop: true,
+                showCursor: true,
+                cursorChar: '|'
+            });
+
+            const nameBox = document.getElementById('name-box');
+            const arrowsContainer = document.querySelector('.arrows-container');
+            const svg = arrowsContainer ? arrowsContainer.querySelector('svg') : null;
+            const arrowLines = svg ? Array.from(svg.querySelectorAll('.arrow')) : [];
+            const bubbles = Array.from(document.querySelectorAll('.bubble'));
+            const epsilon = 0.0001;
+
+            const bubbleConfigs = bubbles.map((bubble, index) => ({
+                element: bubble,
+                angle: (parseFloat(bubble.dataset.angle) || 0) * Math.PI / 180,
+                radiusOffset: parseFloat(bubble.dataset.radiusOffset) || 0,
+                floatAmpX: 5 + index * 1.0,
+                floatAmpY: 3.5 + index * 0.8,
+                floatSpeed: 0.32 + index * 0.045,
+                phase: index * 1.35,
+                baseX: 0,
+                baseY: 0,
+                currentX: 0,
+                currentY: 0
+            }));
+
+            const selectorToConfig = new Map();
+            bubbleConfigs.forEach(config => {
+                const id = config.element.id;
+                if (id) {
+                    selectorToConfig.set(`#${id}`, config);
+                }
+            });
+
+            const arrowTargets = arrowLines.map(line => {
+                const selector = line.dataset.target;
+                const config = selector ? selectorToConfig.get(selector) : null;
+                return config ? { line, config } : null;
+            }).filter(Boolean);
+
+            const layoutState = {
+                ready: false,
+                containerRect: null,
+                nameRect: null,
+                centerX: 0,
+                centerY: 0,
+                nameRadius: 0,
+                baseRadius: 0,
+                maxRadius: 0
+            };
+
+            let layoutDirty = true;
+
+            const refreshLayout = () => {
+                if (!nameBox || !arrowsContainer) {
+                    layoutState.ready = false;
+                    return;
+                }
+
+                const containerRect = arrowsContainer.getBoundingClientRect();
+                const nameRect = nameBox.getBoundingClientRect();
+
+                if (!containerRect.width || !containerRect.height) {
+                    layoutState.ready = false;
+                    return;
+                }
+
+                layoutState.containerRect = containerRect;
+                layoutState.nameRect = nameRect;
+                layoutState.centerX = nameRect.left + nameRect.width / 2 - containerRect.left;
+                layoutState.centerY = nameRect.top + nameRect.height / 2 - containerRect.top;
+                layoutState.nameRadius = Math.min(nameRect.width, nameRect.height) / 2;
+                const shortestSide = Math.min(containerRect.width, containerRect.height);
+                layoutState.baseRadius = shortestSide * 0.36;
+                layoutState.maxRadius = shortestSide * 0.48;
+                layoutState.ready = true;
+
+                bubbleConfigs.forEach(config => {
+                    const bubble = config.element;
+                    const bubbleRadius = bubble.offsetWidth / 2;
+                    const cos = Math.cos(config.angle);
+                    const sin = Math.sin(config.angle);
+                    const limitX = containerRect.width / 2 - bubbleRadius - 16;
+                    const limitY = containerRect.height / 2 - bubbleRadius - 16;
+
+                    const clearance = layoutState.nameRadius + bubbleRadius + 38;
+                    let radius = layoutState.baseRadius + config.radiusOffset;
+                    radius = Math.max(radius, clearance);
+                    radius = Math.min(
+                        radius,
+                        limitX / Math.max(Math.abs(cos), epsilon),
+                        limitY / Math.max(Math.abs(sin), epsilon),
+                        layoutState.maxRadius
+                    );
+
+                    const baseX = layoutState.centerX + cos * radius;
+                    const baseY = layoutState.centerY + sin * radius;
+                    config.baseX = baseX;
+                    config.baseY = baseY;
+                    config.currentX = baseX;
+                    config.currentY = baseY;
+                    bubble.style.left = `${baseX}px`;
+                    bubble.style.top = `${baseY}px`;
+                });
+            };
+
+            const ensureLayout = () => {
+                if (layoutDirty) {
+                    refreshLayout();
+                    layoutDirty = false;
+                }
+                return layoutState.ready;
+            };
+
+            const applyFloatingPositions = timeSeconds => {
+                bubbleConfigs.forEach(config => {
+                    const offsetX = Math.sin(timeSeconds * config.floatSpeed + config.phase) * config.floatAmpX;
+                    const offsetY = Math.cos(timeSeconds * (config.floatSpeed * 0.85) + config.phase) * config.floatAmpY;
+                    config.currentX = config.baseX + offsetX;
+                    config.currentY = config.baseY + offsetY;
+                    config.element.style.left = `${config.currentX}px`;
+                    config.element.style.top = `${config.currentY}px`;
+                });
+            };
+
+            const updateArrows = () => {
+                if (!layoutState.ready || !svg) {
+                    return;
+                }
+
+                const { containerRect, centerX, centerY, nameRadius } = layoutState;
+                svg.setAttribute('viewBox', `0 0 ${containerRect.width} ${containerRect.height}`);
+
+                arrowTargets.forEach(({ line, config }) => {
+                    const bubbleRadius = config.element.offsetWidth / 2;
+                    const dx = config.currentX - centerX;
+                    const dy = config.currentY - centerY;
+                    const distance = Math.hypot(dx, dy) || epsilon;
+
+                    const normX = dx / distance;
+                    const normY = dy / distance;
+
+                    const originOffset = Math.max(nameRadius - 4, 0);
+                    const originX = centerX + normX * originOffset;
+                    const originY = centerY + normY * originOffset;
+
+                    const targetOffset = Math.max(bubbleRadius - 6, 0);
+                    const targetX = config.currentX - normX * targetOffset;
+                    const targetY = config.currentY - normY * targetOffset;
+
+                    line.setAttribute('x1', originX.toFixed(2));
+                    line.setAttribute('y1', originY.toFixed(2));
+                    line.setAttribute('x2', targetX.toFixed(2));
+                    line.setAttribute('y2', targetY.toFixed(2));
+                });
+            };
+
+            const markLayoutDirty = () => {
+                layoutDirty = true;
+            };
+
+            window.addEventListener('resize', markLayoutDirty);
+
+            if ('ResizeObserver' in window) {
+                const observer = new ResizeObserver(markLayoutDirty);
+                if (nameBox) observer.observe(nameBox);
+                if (arrowsContainer) observer.observe(arrowsContainer);
+            }
+
+            const step = now => {
+                const timeSeconds = now / 1000;
+                if (ensureLayout()) {
+                    applyFloatingPositions(timeSeconds);
+                    updateArrows();
+                }
+                requestAnimationFrame(step);
+            };
+
+            requestAnimationFrame(step);
+        });
+
+        // Navigation function
+        function goToExperience(id) {
+            window.location.href = `experience.html?id=${id}`;
+        }
+    </script>
+</body>
+</html>
