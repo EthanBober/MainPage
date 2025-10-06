@@ -7,7 +7,7 @@
 ├── experience.html         # Detailed experience page template
 ├── skills.html            # Skills and competencies page
 ├── contact.html           # Contact information page
-├── main.js               # Core JavaScript functionality
+├── remain.js               # Core JavaScript functionality
 ├── resources/            # Media and asset folder
 │   ├── hero-image.png    # Generated hero image
 │   ├── profile-photo.jpg # Professional headshot
@@ -79,7 +79,7 @@
 - **Canvas API**: Grid background rendering
 - **Anime.js**: Smooth animations
 
-### JavaScript Modules (main.js)
+### JavaScript Modules (remain.js)
 1. **GridSystem**: Canvas-based interactive grid
 2. **BubbleManager**: Experience bubble interactions
 3. **AnimationController**: Coordinated animations
