@@ -23,6 +23,32 @@
             height: 100vh;
             width: 100vw;
         }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.32;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(255,0,0,0.45) 24px, transparent 25px),
+                repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(0,80,255,0.45) 24px, transparent 25px),
+                radial-gradient(circle, rgba(255,0,0,0.45) 1.5px, transparent 2.5px),
+                radial-gradient(circle, rgba(0,80,255,0.45) 1.5px, transparent 2.5px);
+            background-size:
+                25px 25px,
+                25px 25px,
+                25px 25px,
+                25px 25px;
+            background-position:
+                0 0,
+                0 0,
+                0 0,
+                12.5px 12.5px;
+        }
 
         /* Canvas for interactive grid background */
         #gridCanvas {
@@ -87,47 +113,68 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 0.45rem;
-            width: clamp(320px, 34vw, 460px);
-            height: clamp(220px, 26vw, 320px);
-            padding: 1.25rem 2.5rem;
+            gap: 0.4rem;
+            width: clamp(280px, 32vw, 400px);
+            height: clamp(180px, 22vw, 260px);
+            padding: 1.15rem 2.1rem;
+            z-index: 15;
+        }
+
+        .name-center::before {
+            content: '';
+            position: absolute;
+            inset: -3%;
+            border-radius: 52% / 60%;
+            background: radial-gradient(ellipse at 50% 50%, rgba(8, 12, 20, 0.92), rgba(8, 12, 20, 0.05));
+            opacity: 0.85;
+            filter: blur(2px);
+            z-index: 0;
+            pointer-events: none;
         }
 
         .name-center .name-orb {
             position: absolute;
             inset: 0;
             border-radius: 50% / 58%;
-            background: radial-gradient(ellipse at 52% 38%, rgba(126, 176, 255, 0.16), rgba(12, 20, 36, 0.08));
+            background: #1a2236; /* Solid color, no gradient */
             border: 1px solid rgba(126, 176, 255, 0.18);
-            box-shadow: 0 16px 32px rgba(80, 130, 210, 0.16), 0 0 120px rgba(120, 180, 255, 0.28);
-            filter: drop-shadow(0 0 32px rgba(110, 140, 220, 0.32));
             pointer-events: none;
-            z-index: -1;
+            z-index: 1;
             transform-origin: center;
             animation: orbPulse 12s ease-in-out infinite;
         }
 
+        @keyframes orbPulse {
+            0%, 100% {
+                transform: scaleX(1) scaleY(1);
+            }
+            50% {
+                transform: scaleX(1.04) scaleY(1.02);
+            }
+        }
+
         .hero-name {
-            font-size: clamp(2.1rem, 5.4vw, 4rem);
+            font-size: clamp(1.9rem, 4.8vw, 3.6rem);
             font-weight: 700;
-            margin-bottom: 0.15rem;
-            background: linear-gradient(45deg, #e9f0ff, #7fb0ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 14px rgba(95, 160, 255, 0.36);
+            margin-bottom: 0.12rem;
+            color: #bcd3f6; /* Match ASM bubble color */
+            background: none;
+            -webkit-background-clip: unset;
+            -webkit-text-fill-color: unset;
+            background-clip: unset;
+            text-shadow: none;
             line-height: 1.05;
             position: relative;
-            z-index: 1;
+            z-index: 3;
         }
 
         .hero-description {
-            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            font-size: clamp(0.85rem, 1.8vw, 1.1rem);
             font-weight: 400;
             color: rgba(220, 228, 244, 0.72);
             line-height: 1.4;
             position: relative;
-            z-index: 1;
+            z-index: 3;
         }
 
         /* Bubbles positioned around the name */
@@ -135,8 +182,8 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 168px;
-            height: 168px;
+            width: 152px;
+            height: 152px;
             border-radius: 50%;
             background: radial-gradient(circle at 50% 28%, rgba(52, 60, 86, 0.9), rgba(12, 16, 26, 0.95));
             border: 1px solid rgba(118, 148, 220, 0.34);
@@ -145,15 +192,14 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 1.1rem;
-            gap: 0.35rem;
+            padding: 0.95rem;
+            gap: 0.3rem;
             cursor: pointer;
             transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275),
                         background 0.35s ease,
                         border-color 0.35s ease,
-                        box-shadow 0.35s ease,
+                        /* Removed box-shadow for no glow */
                         opacity 0.35s ease;
-            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.38), 0 0 36px rgba(90, 130, 220, 0.18);
             z-index: 15;
             transform: translate(-50%, -50%);
             overflow: hidden;
@@ -171,7 +217,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 0.25rem;
+            gap: 0.22rem;
             width: 100%;
             transform: translateY(0);
             transition: transform 0.35s ease;
@@ -182,7 +228,7 @@
         }
 
         .bubble-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: #ffffff;
             line-height: 1.2;
@@ -190,14 +236,14 @@
         }
 
         .bubble-role {
-            font-size: 0.78rem;
+            font-size: 0.72rem;
             color: rgba(215, 225, 240, 0.82);
             line-height: 1.2;
             text-align: center;
         }
 
         .bubble-detail {
-            font-size: 0.7rem;
+            font-size: 0.66rem;
             color: rgba(200, 210, 230, 0.62);
             opacity: 0;
             transform: translateY(12px);
@@ -260,17 +306,6 @@
         .contact-footer a:hover {
             color: #4A90E2;
             transform: translateY(-2px);
-        }
-
-        @keyframes orbPulse {
-            0%, 100% {
-                transform: scaleX(1) scaleY(1);
-                box-shadow: 0 16px 32px rgba(80, 130, 210, 0.16), 0 0 120px rgba(120, 180, 255, 0.28);
-            }
-            50% {
-                transform: scaleX(1.04) scaleY(1.02);
-                box-shadow: 0 22px 48px rgba(90, 150, 230, 0.22), 0 0 160px rgba(155, 200, 255, 0.42);
-            }
         }
 
         /* Responsive */
@@ -364,7 +399,7 @@
             <div class="bubble-content">
                 <div class="bubble-title">Science Olympiad</div>
                 <div class="bubble-role">M.S Supervisor</div>
-                <div class="bubble-detail">STEM Education Initiative</div>
+                <div class="bubble-detail">STEM Education Intiative</div>
             </div>
         </div>
 
@@ -396,9 +431,8 @@
     <!-- Contact footer -->
     <footer class="contact-footer">
         <a href="mailto:ebober@seas.upenn.edu" title="Email">Email</a>
-        <a href="https://linkedin.com/in/ethan-bober" target="_blank" title="LinkedIn">LinkedIn</a>
-        <a href="https://github.com/ethan-bober" target="_blank" title="GitHub">GitHub</a>
-        <a href="tel:954-982-1449" title="Phone">Phone</a>
+        <a href="https://www.linkedin.com/in/ethanbober/" target="_blank" title="LinkedIn">LinkedIn</a>
+        <a href="https://github.com/EthanBober" target="_blank" title="GitHub">GitHub</a>
     </footer>
 
     <script src="main.js"></script>
@@ -462,7 +496,9 @@
                 centerY: 0,
                 nameRadius: 0,
                 baseRadius: 0,
-                maxRadius: 0
+                maxRadius: 0,
+                nameEllipseWidth: 0,
+                nameEllipseHeight: 0
             };
 
             let layoutDirty = true;
@@ -485,10 +521,12 @@
                 layoutState.nameRect = nameRect;
                 layoutState.centerX = nameRect.left + nameRect.width / 2 - containerRect.left;
                 layoutState.centerY = nameRect.top + nameRect.height / 2 - containerRect.top;
-                layoutState.nameRadius = Math.min(nameRect.width, nameRect.height) / 2;
+                layoutState.nameEllipseWidth = nameRect.width / 2;
+                layoutState.nameEllipseHeight = nameRect.height / 2;
+                layoutState.nameRadius = Math.min(layoutState.nameEllipseWidth, layoutState.nameEllipseHeight);
                 const shortestSide = Math.min(containerRect.width, containerRect.height);
-                layoutState.baseRadius = shortestSide * 0.36;
-                layoutState.maxRadius = shortestSide * 0.48;
+                layoutState.baseRadius = shortestSide * 0.44;
+                layoutState.maxRadius = shortestSide * 0.6;
                 layoutState.ready = true;
 
                 bubbleConfigs.forEach(config => {
@@ -499,7 +537,13 @@
                     const limitX = containerRect.width / 2 - bubbleRadius - 16;
                     const limitY = containerRect.height / 2 - bubbleRadius - 16;
 
-                    const clearance = layoutState.nameRadius + bubbleRadius + 38;
+                const ellipseRadiusAlongDirection = ellipseRadiusAt(
+                    layoutState.nameEllipseWidth,
+                    layoutState.nameEllipseHeight,
+                    cos,
+                    sin
+                );
+                const clearance = ellipseRadiusAlongDirection + bubbleRadius + 48;
                     let radius = layoutState.baseRadius + config.radiusOffset;
                     radius = Math.max(radius, clearance);
                     radius = Math.min(
@@ -544,7 +588,7 @@
                     return;
                 }
 
-                const { containerRect, centerX, centerY, nameRadius } = layoutState;
+                const { containerRect, centerX, centerY, nameEllipseWidth, nameEllipseHeight } = layoutState;
                 svg.setAttribute('viewBox', `0 0 ${containerRect.width} ${containerRect.height}`);
 
                 arrowTargets.forEach(({ line, config }) => {
@@ -556,9 +600,14 @@
                     const normX = dx / distance;
                     const normY = dy / distance;
 
-                    const originOffset = Math.max(nameRadius - 4, 0);
-                    const originX = centerX + normX * originOffset;
-                    const originY = centerY + normY * originOffset;
+                    const { x: originX, y: originY } = ellipseEdgePoint(
+                        centerX,
+                        centerY,
+                        nameEllipseWidth,
+                        nameEllipseHeight,
+                        normX,
+                        normY
+                    );
 
                     const targetOffset = Math.max(bubbleRadius - 6, 0);
                     const targetX = config.currentX - normX * targetOffset;
@@ -570,6 +619,22 @@
                     line.setAttribute('y2', targetY.toFixed(2));
                 });
             };
+
+            function ellipseRadiusAt(radiusX, radiusY, cos, sin) {
+                return 1 / Math.sqrt(
+                    Math.pow(cos / radiusX, 2) + Math.pow(sin / radiusY, 2)
+                );
+            }
+
+            function ellipseEdgePoint(cx, cy, radiusX, radiusY, dirX, dirY) {
+                const scale = 1 / Math.sqrt(
+                    Math.pow(dirX / radiusX, 2) + Math.pow(dirY / radiusY, 2)
+                );
+                return {
+                    x: cx + dirX * scale,
+                    y: cy + dirY * scale
+                };
+            }
 
             const markLayoutDirty = () => {
                 layoutDirty = true;

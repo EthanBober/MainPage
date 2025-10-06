@@ -105,16 +105,15 @@ class InteractivePortfolio {
 
     drawGrid() {
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        
+
         // Draw grid lines with illumination
         this.gridCells.forEach(cell => {
             // Smooth opacity transition
             cell.opacity += (cell.targetOpacity - cell.opacity) * 0.1;
-            
+
             if (cell.opacity > 0.01) {
                 this.ctx.strokeStyle = `rgba(255, 255, 255, ${cell.opacity})`;
                 this.ctx.lineWidth = 1;
-                
                 // Draw cell border
                 this.ctx.strokeRect(
                     cell.x, 
@@ -122,7 +121,6 @@ class InteractivePortfolio {
                     this.gridSize, 
                     this.gridSize
                 );
-                
                 // Add subtle glow effect for illuminated cells
                 if (cell.illuminated && cell.opacity > 0.2) {
                     this.ctx.shadowColor = 'rgba(255, 255, 255, 0.3)';
@@ -131,6 +129,18 @@ class InteractivePortfolio {
                     this.ctx.shadowBlur = 0;
                 }
             }
+
+            // Draw red dot at grid intersection
+            let dotRadius = 1;
+            let dotColor = 'rgba(255, 40, 40, 0.32)';
+            // If cell is illuminated and a line is drawn, light up the dot (only color/opacity changes)
+            if (cell.illuminated && cell.targetOpacity > 0.2) {
+                dotColor = 'rgba(255, 40, 40, 0.85)';
+            }
+            this.ctx.beginPath();
+            this.ctx.arc(cell.x + this.gridSize/2, cell.y + this.gridSize/2, dotRadius, 0, 2 * Math.PI);
+            this.ctx.fillStyle = dotColor;
+            this.ctx.fill();
         });
 
         // Draw connection lines from mouse to nearby grid points
