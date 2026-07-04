@@ -1,115 +1,448 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ethan Bober | Materials Engineer</title>
-    <meta name="description"
-        content="Portfolio of Ethan Bober - Materials Engineering, Metrology, and Nanofabrication.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ethan Bober — Materials Science &amp; Metrology</title>
+<meta name="description" content="Ethan Bober — materials science &amp; engineering, semiconductor metrology and process control.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBFBFA;
+    --ink:#101112;
+    --body:#43464C;
+    --mut:#83868C;
+    --line:#E7E8E5;
+    --nitride:#2B36D6; /* thin-film silicon-nitride blue */
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{cursor:crosshair;scroll-behavior:smooth}
+  body{
+    font-family:'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    font-size:15.5px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a,button{cursor:pointer}
+  ::selection{background:var(--nitride);color:#fff}
+  :focus-visible{outline:2px solid var(--nitride);outline-offset:3px}
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="css/styles.css">
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px}
+
+  /* ---------- stage crosshair + readout ---------- */
+  .xh{position:fixed;background:rgba(16,17,18,.07);pointer-events:none;z-index:40}
+  .xh-v{top:0;left:0;width:1px;height:100vh}
+  .xh-h{top:0;left:0;height:1px;width:100vw}
+  .readout{
+    position:fixed;top:20px;right:22px;z-index:50;
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:10px;letter-spacing:.08em;line-height:1.75;
+    text-align:right;color:var(--mut);pointer-events:none;
+    text-transform:uppercase;
+  }
+  .readout b{font-weight:500;color:var(--ink)}
+  .readout .site{color:var(--nitride)}
+  @media (max-width:760px),(pointer:coarse){.xh,.readout{display:none}}
+
+  /* ---------- hero ---------- */
+  .hero{padding:19vh 0 96px}
+  .eyebrow{
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--mut);display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:'';width:8px;height:8px;background:var(--nitride);flex:none}
+  h1{
+    margin:26px 0 30px;
+    font-weight:900;
+    font-size:clamp(58px,12.5vw,132px);
+    line-height:.92;
+    letter-spacing:-.045em;
+    text-transform:uppercase;
+  }
+  .lede{max-width:520px;color:var(--body);font-size:16.5px}
+  .lede strong{font-weight:500;color:var(--ink)}
+  .hero-links{margin-top:34px;display:flex;flex-wrap:wrap;gap:22px}
+  .hero-links a{
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink);text-decoration:none;
+    border-bottom:1px solid var(--line);padding-bottom:3px;
+    transition:color .18s,border-color .18s;
+  }
+  .hero-links a:hover{color:var(--nitride);border-color:var(--nitride)}
+
+  .fade{opacity:0;transform:translateY(14px);animation:rise .7s ease .1s forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  /* ---------- sections ---------- */
+  section{padding:72px 0}
+  .label{
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--mut);margin-bottom:28px;
+  }
+
+  /* ---------- experience ---------- */
+  .exp{border-top:1px solid var(--line);transition:opacity .25s}
+  .exp:last-child{border-bottom:1px solid var(--line)}
+  .exp.dim{opacity:.24}
+  .exp.hit .role{color:var(--nitride)}
+  .exp.hit .plus{color:var(--nitride)}
+  .exp-head{
+    width:100%;display:grid;grid-template-columns:1fr auto auto;
+    align-items:baseline;gap:18px;
+    background:none;border:0;text-align:left;
+    padding:22px 0;color:inherit;font:inherit;
+  }
+  .role{font-weight:900;font-size:18px;letter-spacing:-.015em;line-height:1.25;transition:color .18s}
+  .org{display:block;margin-top:3px;font-size:13px;font-weight:400;color:var(--mut)}
+  .dates{
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:10.5px;letter-spacing:.08em;color:var(--mut);
+    text-transform:uppercase;white-space:nowrap;
+  }
+  .plus{
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:15px;color:var(--ink);line-height:1;
+    transition:transform .3s,color .18s;
+  }
+  .exp.open .plus{transform:rotate(45deg)}
+  .exp-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
+  .exp.open .exp-body{grid-template-rows:1fr}
+  .exp-body>div{overflow:hidden}
+  .exp-body ul{list-style:none;padding:0 0 26px;max-width:600px}
+  .exp-body li{
+    position:relative;padding-left:22px;margin-bottom:10px;
+    color:var(--body);font-size:14.5px;
+  }
+  .exp-body li::before{
+    content:'';position:absolute;left:0;top:.62em;
+    width:10px;height:1.5px;background:var(--mut);
+  }
+
+  /* ---------- skills ---------- */
+  .hint{
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--mut);margin:-14px 0 34px;
+  }
+  .hint em{font-style:normal;color:var(--nitride)}
+  .skill-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+  @media (max-width:680px){.skill-grid{grid-template-columns:1fr;gap:30px}}
+  .skill-group h3{
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:500;color:var(--ink);margin-bottom:14px;
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    background:none;border:1px solid var(--line);border-radius:2px;
+    padding:7px 11px;color:var(--body);
+    transition:border-color .15s,background .15s,color .15s;
+  }
+  .chip:hover{border-color:var(--nitride);color:var(--nitride)}
+  .chip.on{background:var(--nitride);border-color:var(--nitride);color:#fff}
+
+  /* ---------- education ---------- */
+  .edu-degree{font-weight:900;font-size:22px;letter-spacing:-.02em;line-height:1.3}
+  .edu-school{margin-top:6px;color:var(--body)}
+  .edu-stats{
+    margin-top:16px;font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);
+  }
+  .edu-stats b{color:var(--ink);font-weight:500}
+  .edu-courses{margin-top:14px;font-size:13.5px;color:var(--mut);max-width:520px}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:72px 0 88px}
+  .email{
+    display:inline-block;margin-top:6px;
+    font-weight:900;font-size:clamp(22px,4.6vw,40px);letter-spacing:-.03em;
+    color:var(--ink);text-decoration:none;transition:color .18s;
+    overflow-wrap:anywhere;
+  }
+  .email:hover{color:var(--nitride)}
+  .foot-row{
+    margin-top:36px;display:flex;flex-wrap:wrap;gap:12px 26px;
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);
+  }
+  .foot-row a{color:var(--mut);text-decoration:none;transition:color .18s}
+  .foot-row a:hover{color:var(--nitride)}
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+    html{scroll-behavior:auto}
+    .fade{opacity:1;transform:none}
+    .xh,.readout{display:none}
+  }
+</style>
 </head>
-
 <body>
-    <!-- Background Animation -->
-    <canvas id="lattice-canvas"></canvas>
 
-    <!-- Main Application Container -->
-    <div class="app-container">
+<!-- stage crosshair + coordinate readout -->
+<div class="xh xh-v" id="xhv" aria-hidden="true"></div>
+<div class="xh xh-h" id="xhh" aria-hidden="true"></div>
+<div class="readout" aria-hidden="true">
+  X <b id="rx">+000.000</b> mm<br>
+  Y <b id="ry">+000.000</b> mm<br>
+  SITE · <b class="site" id="rs">HOME</b>
+</div>
 
-        <!-- Center Profile -->
-        <div class="center-profile">
-            <h1 class="profile-name">Ethan Bober</h1>
-            <div class="profile-title">Materials Engineer</div>
-            <p class="profile-bio">
-                Specializing in semiconductor fabrication, metrology, and data-driven process optimization.
-            </p>
+<header class="hero wrap fade" data-site="HOME">
+  <p class="eyebrow">Materials Science — Metrology &amp; Process</p>
+  <h1>Ethan<br>Bober</h1>
+  <p class="lede">
+    BSE + MSE candidate in Materials Science &amp; Engineering at the
+    <strong>University of Pennsylvania</strong>
+  </p>
+  <nav class="hero-links" aria-label="Contact links">
+    <a href="mailto:ebober@seas.upenn.edu">Email</a>
+    <a href="https://www.linkedin.com/in/ethanbober/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://github.com/EthanBober" target="_blank" rel="noopener">GitHub</a>
+  </nav>
+</header>
+
+<main>
+  <section class="wrap" data-site="EXPERIENCE">
+    <h2 class="label">Experience</h2>
+
+    <article class="exp open" data-tags="cdsem ocd spc">
+      <button class="exp-head" aria-expanded="true" aria-controls="p1">
+        <span class="role">Metrology Process Engineer Intern
+          <span class="org">TSMC · Philadelphia</span>
+        </span>
+        <span class="dates">Jun 2026 —</span>
+        <span class="plus" aria-hidden="true">+</span>
+      </button>
+      <div class="exp-body" id="p1"><div>
+      </div></div>
+    </article>
+
+    <article class="exp" data-tags="granta">
+      <button class="exp-head" aria-expanded="false" aria-controls="p2">
+        <span class="role">Teaching Assistant — Materials Selection
+          <span class="org">University of Pennsylvania · Philadelphia</span>
+        </span>
+        <span class="dates">Jan 2026 —</span>
+        <span class="plus" aria-hidden="true">+</span>
+      </button>
+      <div class="exp-body" id="p2"><div>
+        <ul>
+          <li>Led office hours for 28 students on materials selection methodologies and Ashby analysis via Ansys Granta.</li>
+          <li>Evaluated assignments and projects for understanding of performance indices and material property charts.</li>
+          <li>Supported instruction on applying Ashby selection charts to identify optimal materials under thermal constraints.</li>
+        </ul>
+      </div></div>
+    </article>
+
+    <article class="exp" data-tags="python neo4j granta">
+      <button class="exp-head" aria-expanded="false" aria-controls="p3">
+        <span class="role">Materials Informatics Engineering Intern
+          <span class="org">ASM International · Cleveland</span>
+        </span>
+        <span class="dates">May – Aug 2025</span>
+        <span class="plus" aria-hidden="true">+</span>
+      </button>
+      <div class="exp-body" id="p3"><div>
+        <ul>
+          <li>Engineered an automated pipeline migrating material and micrograph records from GRANTA databases to a Neo4j graph platform — 250,000 materials, 4,000,000 properties.</li>
+          <li>95% reduction in data retrieval time through database migration and reformatting for machine-readability.</li>
+          <li>Presented to 160+ company representatives at the IMAT conference (5,000+ attendees).</li>
+        </ul>
+      </div></div>
+    </article>
+
+    <article class="exp" data-tags="pvd litho doe">
+      <button class="exp-head" aria-expanded="false" aria-controls="p4">
+        <span class="role">PVD &amp; Metrology Process Engineer
+          <span class="org">Quattrone Nanofabrication Facility · Philadelphia</span>
+        </span>
+        <span class="dates">Apr 2025 —</span>
+        <span class="plus" aria-hidden="true">+</span>
+      </button>
+      <div class="exp-body" id="p4"><div>
+        <ul>
+          <li>Standardized PVD recipes via fractional-factorial DOE, keeping deposition rate within ±5% of target.</li>
+          <li>Synthesized patterned Nb-Si and ITO films using UV photolithography and lift-off; characterized wafers via SEM and optical profilometry in an ISO 6 cleanroom.</li>
+          <li>Maintained PVD DC/RF sputtering material supply and validated performance tolerance weekly.</li>
+        </ul>
+      </div></div>
+    </article>
+
+    <article class="exp" data-tags="">
+      <button class="exp-head" aria-expanded="false" aria-controls="p5">
+        <span class="role">Lead Organizer — Materials Science Event
+          <span class="org">Science Olympiad at Penn · Philadelphia</span>
+        </span>
+        <span class="dates">Sep 2024 —</span>
+        <span class="plus" aria-hidden="true">+</span>
+      </button>
+      <div class="exp-body" id="p5"><div>
+        <ul>
+          <li>Coordinated scheduling and resource management for 120+ participants in the materials science event.</li>
+          <li>Authored a 100+ question exam bank covering crystallography, polymers, and nanomaterials.</li>
+          <li>Led and trained a volunteer team of 10 event supervisors on exam logistics and evaluation standards.</li>
+        </ul>
+      </div></div>
+    </article>
+
+    <article class="exp" data-tags="polymer solidworks">
+      <button class="exp-head" aria-expanded="false" aria-controls="p6">
+        <span class="role">Undergraduate Polymer Researcher
+          <span class="org">Shu Yang Materials Science Lab · Philadelphia</span>
+        </span>
+        <span class="dates">Aug 2024 – Jan 2026</span>
+        <span class="plus" aria-hidden="true">+</span>
+      </button>
+      <div class="exp-body" id="p6"><div>
+        <ul>
+          <li>Designed a 285-channel desiccant wheel in SolidWorks and fabricated it using precision laser cutting.</li>
+          <li>Performed gravimetric sorption analysis to measure water uptake across synthesis parameters.</li>
+          <li>Achieved a 3.5× increase in overall moisture absorption versus commercial hygroscopic desiccants.</li>
+        </ul>
+      </div></div>
+    </article>
+  </section>
+
+  <section class="wrap" data-site="SKILLS">
+    <h2 class="label">Skills</h2>
+    <p class="hint">Hover or tap a skill to <em>trace it</em> across roles</p>
+    <div class="skill-grid">
+      <div class="skill-group">
+        <h3>Metrology &amp; Process Control</h3>
+        <div class="chips">
+          <button class="chip" data-tag="cdsem" aria-pressed="false">CD-SEM</button>
+          <button class="chip" data-tag="ocd" aria-pressed="false">OCD</button>
+          <button class="chip" data-tag="ocd" aria-pressed="false">SSIS</button>
+          <button class="chip" data-tag="spc" aria-pressed="false">SPC · Tool Matching</button>
+          <button class="chip" data-tag="doe" aria-pressed="false">DOE · Frac-Factorial</button>
         </div>
-
-        <!-- Floating Bubbles -->
-        <div class="bubble-container">
-            <div class="bubble" data-id="asm">
-                <img src="images/asm_logo_vertical-removebg-preview.png" alt="ASM" class="bubble-logo"
-                    onerror="this.style.display='none'">
-                <div class="bubble-title">ASM International</div>
-                <div class="bubble-subtitle">Informatics</div>
-            </div>
-
-            <div class="bubble" data-id="quattrone">
-                <img src="images/singh.jpg" alt="Penn" class="bubble-logo" onerror="this.style.display='none'">
-                <div class="bubble-title">Quattrone NanoFab</div>
-                <div class="bubble-subtitle">Nanofabrication</div>
-            </div>
-
-            <div class="bubble" data-id="shuyang">
-                <img src="images/shu yang.png" alt="Penn" class="bubble-logo" onerror="this.style.display='none'">
-                <div class="bubble-title">Shu Yang Lab</div>
-                <div class="bubble-subtitle">Research</div>
-            </div>
-
-            <div class="bubble" data-id="scioly">
-                <img src="images/soup.png" alt="SciOly" class="bubble-logo" onerror="this.style.display='none'">
-                <div class="bubble-title">Science Olympiad</div>
-                <div class="bubble-subtitle">Organizer</div>
-            </div>
-
-            <div class="bubble" data-id="mallouk">
-                <img src="images/penn_chem-removebg-preview.png" alt="Mallouk" class="bubble-logo"
-                    onerror="this.style.display='none'">
-                <div class="bubble-title">Mallouk Lab</div>
-                <div class="bubble-subtitle">Energy</div>
-            </div>
+      </div>
+      <div class="skill-group">
+        <h3>Fabrication</h3>
+        <div class="chips">
+          <button class="chip" data-tag="pvd" aria-pressed="false">PVD · Sputter / E-Beam</button>
+          <button class="chip" data-tag="litho" aria-pressed="false">UV Litho &amp; Lift-Off</button>
+          <button class="chip" data-tag="polymer" aria-pressed="false">Polymer Synthesis</button>
         </div>
-
-        <!-- HUD Elements (Fixed Corners) -->
-        <div class="hud-container">
-            <div class="hud-block hud-left" data-id="education">
-                <div class="hud-value">EDUCATION</div>
-                <div class="hud-sub">University of Pennsylvania</div>
-            </div>
-
-            <div class="hud-block hud-right" data-id="skills">
-                <div class="hud-value">SKILLS</div>
-                <div class="hud-sub">Technical Competencies</div>
-            </div>
+      </div>
+      <div class="skill-group">
+        <h3>Computational &amp; Data</h3>
+        <div class="chips">
+          <button class="chip" data-tag="python" aria-pressed="false">Python</button>
+          <button class="chip" data-tag="solidworks" aria-pressed="false">SolidWorks</button>
+          <button class="chip" data-tag="granta" aria-pressed="false">ANSYS &amp; Granta</button>
+          <button class="chip" data-tag="neo4j" aria-pressed="false">Neo4j</button>
         </div>
-
-        <!-- Contact Bar -->
-        <div class="contact-bar">
-            <a href="mailto:ebober@seas.upenn.edu" class="contact-link">Email</a>
-            <a href="https://www.linkedin.com/in/ethanbober/" target="_blank" class="contact-link">LinkedIn</a>
-            <a href="https://github.com/EthanBober" target="_blank" class="contact-link">GitHub</a>
-        </div>
-
+      </div>
     </div>
+  </section>
 
-    <!-- Modal Overlay -->
-    <div id="modal-overlay" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-btn">&times;</button>
-            <div class="modal-header">
-                <h2 class="modal-title">Title</h2>
-                <div class="modal-subtitle">Subtitle | Date</div>
-            </div>
-            <div class="modal-body">
-                <!-- Content injected via JS -->
-            </div>
-            <div class="tech-stack">
-                <!-- Tags injected via JS -->
-            </div>
-        </div>
+  <section class="wrap" data-site="EDUCATION">
+    <h2 class="label">Education</h2>
+    <p class="edu-degree">BSE + MSE, Materials Science &amp; Engineering</p>
+    <p class="edu-school">University of Pennsylvania — submatriculant, May 2027</p>
+    <p class="edu-stats">MSE GPA <b>3.93</b> / 4.0 &nbsp;·&nbsp; BSE GPA <b>3.79</b> / 4.0</p>
+    <p class="edu-courses">Failure Analysis · Optical Information Processing · Fabrication of Nanomaterials</p>
+  </section>
+</main>
+
+<footer data-site="CONTACT">
+  <div class="wrap">
+    <h2 class="label">Get in touch</h2>
+    <a class="email" href="mailto:ebober@seas.upenn.edu">ebober@seas.upenn.edu</a>
+    <div class="foot-row">
+      <a href="https://www.linkedin.com/in/ethanbober/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/EthanBober" target="_blank" rel="noopener">GitHub</a>
+      <span>Philadelphia, PA</span>
     </div>
+  </div>
+</footer>
 
-    <!-- Scripts -->
-    <script src="js/background.js"></script>
-    <script src="js/main.js"></script>
+<script>
+  /* ---- stage readout: cursor position as mm coordinates ---- */
+  const xhv = document.getElementById('xhv'),
+        xhh = document.getElementById('xhh'),
+        rx  = document.getElementById('rx'),
+        ry  = document.getElementById('ry'),
+        rs  = document.getElementById('rs'),
+        sites = Array.from(document.querySelectorAll('[data-site]'));
+
+  const fmt = px => {
+    const mm = px * 0.01; /* 1 px ≙ 10 µm of stage travel */
+    const s = mm < 0 ? '-' : '+';
+    const [i, d] = Math.abs(mm).toFixed(3).split('.');
+    return s + i.padStart(3, '0') + '.' + d;
+  };
+
+  document.addEventListener('mousemove', e => {
+    xhv.style.transform = 'translateX(' + e.clientX + 'px)';
+    xhh.style.transform = 'translateY(' + e.clientY + 'px)';
+    rx.textContent = fmt(e.clientX);
+    ry.textContent = fmt(e.clientY);
+    let site = 'HOME';
+    for (const s of sites) {
+      const r = s.getBoundingClientRect();
+      if (e.clientY >= r.top && e.clientY < r.bottom) { site = s.dataset.site; break; }
+    }
+    rs.textContent = site;
+  });
+
+  /* ---- experience accordion ---- */
+  document.querySelectorAll('.exp-head').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const open = btn.closest('.exp').classList.toggle('open');
+      btn.setAttribute('aria-expanded', open);
+    });
+  });
+
+  /* ---- skill → experience tracing ---- */
+  const exps  = Array.from(document.querySelectorAll('.exp'));
+  const chips = Array.from(document.querySelectorAll('.chip'));
+  let locked = null;
+
+  function trace(tag) {
+    exps.forEach(x => {
+      const hit = (x.dataset.tags || '').split(' ').includes(tag);
+      x.classList.toggle('hit', hit);
+      x.classList.toggle('dim', !hit);
+    });
+  }
+  function clearTrace() {
+    if (locked) { trace(locked.dataset.tag); return; }
+    exps.forEach(x => x.classList.remove('hit', 'dim'));
+  }
+
+  chips.forEach(chip => {
+    chip.addEventListener('mouseenter', () => trace(chip.dataset.tag));
+    chip.addEventListener('focus',      () => trace(chip.dataset.tag));
+    chip.addEventListener('mouseleave', clearTrace);
+    chip.addEventListener('blur',       clearTrace);
+    chip.addEventListener('click', () => {
+      if (locked === chip) {
+        locked = null;
+        chip.classList.remove('on');
+        chip.setAttribute('aria-pressed', 'false');
+        exps.forEach(x => x.classList.remove('hit', 'dim'));
+      } else {
+        if (locked) { locked.classList.remove('on'); locked.setAttribute('aria-pressed', 'false'); }
+        locked = chip;
+        chip.classList.add('on');
+        chip.setAttribute('aria-pressed', 'true');
+        trace(chip.dataset.tag);
+      }
+    });
+  });
+</script>
 </body>
-
 </html>
